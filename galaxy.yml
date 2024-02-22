@@ -1,0 +1,9 @@
+---
+namespace: wwt
+name: "arista-network-tests"
+version: 0.0.1
+readme: README.md
+authors: 
+  - "Bob Longmore"
+description: "arista-network-tests"
+repository: "https://github.com/arista_network_tests"
