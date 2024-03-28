@@ -1,0 +1,9 @@
+---
+- name: Test system settings for Arista Switches
+  gather_facts: false
+  hosts: eda-sw100
+
+  tasks:
+    - name: Test Memory
+      ansible.builtin.include_role:
+        name: test_memory

@@ -1,0 +1,6 @@
+ansible_network_os: arista.eos.eos
+ansible_connection: ansible.netcommon.network_cli
+ansible_user: "wwt"
+ansible_password: "WWTwwt1!"
+ansible_become: true
+ansible_become_method: enable
