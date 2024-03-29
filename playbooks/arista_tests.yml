@@ -6,4 +6,10 @@
   tasks:
     - name: Test Memory
       ansible.builtin.include_role:
-        name: test_memory
+        name: test_system_status
+
+#    - name: Test interfaces statuses
+#
+#    - name: Test BGP Neighbors
+#
+#    - name: Test external services
