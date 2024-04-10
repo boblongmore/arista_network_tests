@@ -1,0 +1,21 @@
+---
+- name: Gather facts used for assertions
+  arista.eos.eos_facts:
+    gather_subset:
+      - hardware
+  register: hw_result
+
+- name: Output amount of Free Memory
+  ansible.builtin.debug:
+    msg:
+      - "Free Memory: {{ hw_result.ansible_facts.ansible_net_memfree_mb }}"
+
+- name: Run Assertions that available memory is above minimum required
+  block:
+    - name: Assert that free memory is above {{ test_system_status_min_memfree }}
+      ansible.builtin.assert:
+        that: "hw_result.ansible_facts.ansible_net_memfree_mb > {{ test_system_status_min_memfree }}"
+  rescue:
+    - name: Publish event for low memory
+      ansible.builtin.debug:
+        msg: "Not enough free memory to safely upgrade on device: {{ inventory_hostname }}"

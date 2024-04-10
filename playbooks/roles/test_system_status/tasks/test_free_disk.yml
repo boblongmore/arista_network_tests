@@ -1,0 +1,25 @@
+---
+- name: Retrieve free space on flash Disk
+  arista.eos.eos_command:
+    commands:
+      - command: 'dir flash:'
+  register: flash_result
+
+- name: Print free space on flash Disk
+  ansible.builtin.debug:
+    msg: "{{ flash_result.stdout_lines[0][-1] | regex_search('\\((\\d+) bytes (?:total|free)\\)', '\\1') }}"
+
+- name: Run free disk tests
+  block:
+    - name: Calculate free disk space on device
+      ansible.builtin.set_fact:
+        avail_disk_space: "{{ flash_result.stdout_lines[0][-1] | regex_search('\\((\\d+) bytes (?:total|free)\\)', '\\1') }}"
+
+    - name: Calculate required free disk space
+      ansible.builtin.set_fact:
+        req_disk_space: "{{ test_system_status_image_size * 2 }}"
+
+    - name: Assert disk has free space two times the size of the image
+      ansible.builtin.assert:
+        that: "{{ req_disk_space | int < avail_disk_space[0] | int }}"
+        fail_msg: "req: {{ req_disk_space }} is more than avail: {{ avail_disk_space[0] }}"
