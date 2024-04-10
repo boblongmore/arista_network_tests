@@ -6,3 +6,4 @@ jinja2
 ansible-pylibssh
 ansible-lint
 pytz
+pre-commit
