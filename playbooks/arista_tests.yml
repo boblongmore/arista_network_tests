@@ -1,7 +1,7 @@
 ---
 - name: Test system settings for Arista Switches
   gather_facts: false
-  hosts: eda-sw100
+  hosts: "{{ dut | default('eda-sw100') }}"
 
   tasks:
     - name: Test Memory
