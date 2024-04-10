@@ -1,4 +1,7 @@
 ---
-
+# System requirements
 test_system_status_min_memfree: 100
 test_system_status_min_flash_space: 100
+
+# file size
+test_system_status_image_size: 479068089
