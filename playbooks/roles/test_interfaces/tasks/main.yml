@@ -1,0 +1,52 @@
+---
+
+- name: Gather network resources
+  arista.eos.eos_facts:
+    gather_network_resources:
+      - interfaces
+      - l3_interfaces
+  register: network_resources
+  tags: interfaces
+
+- name: Print network resources
+  ansible.builtin.debug:
+    msg: "{{ network_resources.ansible_facts.ansible_network_resources }}"
+  tags: interfaces
+
+- name: Use eos_fact results to set_fact running_int
+  ansible.builtin.set_fact:
+    running_int: "{{ network_resources.ansible_facts.ansible_network_resources }}"
+  tags: interfaces
+
+- name: Retrieve int facts via graphql query
+  ansible.builtin.uri:
+    url: "{{ NETBOX_API }}/graphql/"
+    validate_certs: false
+    method: POST
+    follow_redirects: all
+    headers:
+      Authorization: " Token {{ NETBOX_TOKEN }}"
+      Accept: "application/json"
+      Content-Type: application/json
+    body_format: json
+
+    body:
+      query: "{{ lookup('template', '../templates/graph_int.j2') }}"
+  register: graph_lookup
+  tags: interfaces
+
+- name: Print network resources
+  ansible.builtin.debug:
+    msg: "{{ graph_lookup.json.data.device_list[0].interfaces }}"
+  tags: interfaces
+
+- name: Use graphql results to set_fact intent_int
+  ansible.builtin.set_fact:
+    intent_int: "{{ graph_lookup.json.data.device_list[0].interfaces }}"
+  tags: interfaces
+
+- name: Check if things match
+  ansible.builtin.debug:
+    msg: "{{ item }}"
+  loop: "{{ intent_int }}"
+  tags: interfaces
