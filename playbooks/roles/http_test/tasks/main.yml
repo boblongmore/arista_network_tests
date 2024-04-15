@@ -10,7 +10,7 @@
   block:
     - name: Assert that Platform Pete is in returned content
       ansible.builtin.assert:
-        that: "'Platform Pete' in {{ web_contents['content'] }}"
+        that: "'Platform Pete' in web_contents['content']"
   rescue:
     - name: Handle service failure gracefully
       ansible.builtin.debug:
