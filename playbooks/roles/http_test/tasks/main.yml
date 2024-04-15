@@ -5,3 +5,13 @@
     url: "http://{{ http_test_web_server }}"
     return_content: true
   register: web_contents
+
+- name: Assert that the web site is reachable
+  block:
+    - name: Assert that Platform Pete is in returned content
+      ansible.builtin.assert:
+        that: "{{ web_contents['content'] }} contains 'Platform Pete'"
+  rescue:
+    - name: Handle service failure gracefully
+      ansible.builtin.debug:
+        msg: "Platform Pete Industries web service is unavailable"
