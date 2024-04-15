@@ -1,0 +1,9 @@
+---
+- name: Test http service through the network
+  gather_facts: false
+  hosts: user
+
+  tasks:
+    - name: Call role to test http
+      ansible.builtin.include_role:
+        name: http_test

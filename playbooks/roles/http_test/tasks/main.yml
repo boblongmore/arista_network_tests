@@ -1,0 +1,7 @@
+---
+
+- name: Check http status from user side
+  ansible.builtin.uri:
+    url: "http://{{ http_test_web_server }}"
+    return_content: true
+  register: web_contents
