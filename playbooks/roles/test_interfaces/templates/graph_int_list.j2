@@ -1,0 +1,12 @@
+{
+  interface_list(device: "{{ inventory_hostname }}") {
+    name
+    enabled
+    ip_addresses {
+      address
+    }
+    device {
+      name
+    }
+  }
+}

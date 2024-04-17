@@ -1,5 +1,5 @@
 {
-  device_list (name: "eda-sw100") {
+  device_list (name: "{{ inventory_hostname }}") {
      name, interfaces, {
        name, enabled, mgmt_only, ip_addresses {
          id

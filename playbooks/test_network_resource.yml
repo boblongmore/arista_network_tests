@@ -1,0 +1,14 @@
+---
+- name: Test system settings for Arista Switches
+  gather_facts: false
+  hosts: eda-sw100
+  tasks:
+  - name: Network Resource Manager
+    ansible.builtin.include_role:
+      name: network.base.resource_manager
+    vars:
+      ansible_network_os: arista.eos.eos
+      operation: persist
+      resources:
+        - 'interfaces'
+        - 'l3_interfaces'

@@ -4,10 +4,6 @@
   hosts: "{{ dut | default('eda-sw100') }}"
 
   tasks:
-    - name: Test Memory
-      ansible.builtin.include_role:
-        name: test_system_status
-
     - name: Test interfaces statuses
       ansible.builtin.include_role:
         name: test_interfaces

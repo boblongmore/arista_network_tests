@@ -1,23 +1,5 @@
 ---
 
-- name: Gather network resources
-  arista.eos.eos_facts:
-    gather_network_resources:
-      - interfaces
-      - l3_interfaces
-  register: network_resources
-  tags: interfaces
-
-- name: Print network resources
-  ansible.builtin.debug:
-    msg: "{{ network_resources.ansible_facts.ansible_network_resources }}"
-  tags: interfaces
-
-- name: Use eos_fact results to set_fact running_int
-  ansible.builtin.set_fact:
-    running_int: "{{ network_resources.ansible_facts.ansible_network_resources }}"
-  tags: interfaces
-
 - name: Retrieve int facts via graphql query
   ansible.builtin.uri:
     url: "{{ NETBOX_API }}/graphql/"
@@ -31,22 +13,26 @@
     body_format: json
 
     body:
-      query: "{{ lookup('template', '../templates/graph_int.j2') }}"
+      query: "{{ lookup('template', '../templates/graph_int_list.j2') }}"
   register: graph_lookup
   tags: interfaces
 
-- name: Print network resources
-  ansible.builtin.debug:
-    msg: "{{ graph_lookup.json.data.device_list[0].interfaces }}"
+- name: Gather network resources
+  arista.eos.eos_facts:
+    gather_subset:
+      - interfaces
+  register: network_resources
   tags: interfaces
 
-- name: Use graphql results to set_fact intent_int
+- name: Set fact for the information we want from the running config
   ansible.builtin.set_fact:
-    intent_int: "{{ graph_lookup.json.data.device_list[0].interfaces }}"
-  tags: interfaces
+    running_int: "{{ network_resources.ansible_facts.ansible_net_interfaces }}"
 
-- name: Check if things match
-  ansible.builtin.debug:
-    msg: "{{ item }}"
-  loop: "{{ intent_int }}"
-  tags: interfaces
+- name: Use assert module to compare outputs
+  ansible.builtin.assert:
+    that:
+      - running_int[item.name]['operstatus'] == 'connected'
+      - running_int[item.name]['ipv4']['address'] in item.ip_addresses[0]['address']
+      - running_int[item.name]['ipv4']['masklen'] == item.ip_addresses[0]['address'] | ansible.builtin.ipaddr('prefix')
+  loop: "{{ graph_lookup.json.data.interface_list }}"
+  when: item.name != "Management1" and item.enabled == true
