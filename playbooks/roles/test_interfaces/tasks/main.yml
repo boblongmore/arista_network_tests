@@ -2,12 +2,12 @@
 
 - name: Retrieve int facts via graphql query
   ansible.builtin.uri:
-    url: "{{ nb_url }}/graphql/"
+    url: "{{ NETBOX_API }}/graphql/"
     validate_certs: false
     method: POST
     follow_redirects: all
     headers:
-      Authorization: " Token {{ nb_token }}"
+      Authorization: " Token {{ NETBOX_TOKEN }}"
       Accept: "application/json"
       Content-Type: application/json
     body_format: json
