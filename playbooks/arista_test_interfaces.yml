@@ -9,6 +9,7 @@
         name: test_interfaces
       vars:
         messages_kafka_hostname: fedora01.lab.local
+        message_kafka_port: 9092
         messages_kafka_topic: arista-topic
       tags: interfaces
 #
