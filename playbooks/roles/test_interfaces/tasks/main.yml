@@ -37,14 +37,10 @@
           - running_int[item.name]['ipv4']['address'] in item.ip_addresses[0]['address']
           - running_int[item.name]['ipv4']['masklen'] == item.ip_addresses[0]['address'] | ansible.builtin.ipaddr('prefix')
         success_msg: "Interface tests passed"
-        fail_msg: "tests failed"
+        fail_msg: "Interface tests failed"
       loop: "{{ graph_lookup.json.data.interface_list }}"
       when: item.name != "Management1"
       register: test_results
-
-    - name: Print success messages
-      ansible.builtin.debug:
-        msg: "{{ test_results.results }}"
 
     - name: Publish kafka message with test test_results
       bob_private_collection.kafka_python.producer_kafkapy:
@@ -53,10 +49,8 @@
         verify_mode: false
         topic: "{{ messages_kafka_topic }}"
         data: {
-          "device_name": "{{ item.item.device.name }}",
-          "test_status": "{{ item.msg }}",
-          "interface_name": "{{ item.item.name }}",
-          "failure": "{{ item.assertion }}"
+          "device_name": "{{ test_results.results[0].item.device.name }}",
+          "test_status": "{{ test_results.results[0].msg }}",
         }
 
   rescue:
