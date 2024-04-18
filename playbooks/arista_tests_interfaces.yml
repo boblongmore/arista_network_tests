@@ -1,5 +1,5 @@
 ---
-- name: Test system settings for Arista Switches
+- name: Test interfaces for Arista switches
   gather_facts: false
   hosts: "{{ dut | default('eda-sw100') }}"
 

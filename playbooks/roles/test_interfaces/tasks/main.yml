@@ -28,11 +28,31 @@
   ansible.builtin.set_fact:
     running_int: "{{ network_resources.ansible_facts.ansible_net_interfaces }}"
 
-- name: Use assert module to compare outputs
-  ansible.builtin.assert:
-    that:
-      - running_int[item.name]['operstatus'] == 'connected'
-      - running_int[item.name]['ipv4']['address'] in item.ip_addresses[0]['address']
-      - running_int[item.name]['ipv4']['masklen'] == item.ip_addresses[0]['address'] | ansible.builtin.ipaddr('prefix')
-  loop: "{{ graph_lookup.json.data.interface_list }}"
-  when: item.name != "Management1" and item.enabled == true
+- name: Block used to test test_interfaces
+  block:
+    - name: Use assert module to compare outputs
+      ansible.builtin.assert:
+        that:
+          - (running_int[item.name]['operstatus'] == 'connected') and item.enabled
+          - running_int[item.name]['ipv4']['address'] in item.ip_addresses[0]['address']
+          - running_int[item.name]['ipv4']['masklen'] == item.ip_addresses[0]['address'] | ansible.builtin.ipaddr('prefix')
+        success_msg: "Interface tests passed"
+        fail_msg: "tests failed"
+      loop: "{{ graph_lookup.json.data.interface_list }}"
+      when: item.name != "Management1"
+      register: test_results
+
+    - name: Print success messages
+      ansible.builtin.debug:
+        msg: "This is the success message"
+
+  rescue:
+    - name: send to kafka bus
+      bob_private_collection.kafka_python.producer_kafkapy:
+        host: "{{ messages_kafka_hostname }}"
+        port: "{{ messages_kafka_port | default('9092') }}"
+        verify_mode: "{{ messages_kafka_verify | default(false) }}"
+        topic: "{{ messages_kafka_topic }}"
+        data: "{{ messages_kafka_data }}"
+      loop: "{{ test_results.results }}"
+      when: item.item.name != "Management1" and item.msg == "tests failed"
