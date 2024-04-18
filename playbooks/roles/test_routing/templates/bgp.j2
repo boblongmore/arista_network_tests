@@ -1,0 +1,36 @@
+{
+  bgp_session_list(device: "{{ inventory_hostname }}") {
+    device {
+      id
+      name
+    }
+    local_address {
+      id
+      address
+    }
+    remote_address {
+      id
+      address
+    }
+    local_as {
+      id
+      asn
+    }
+    remote_as {
+      id
+      asn
+    }
+    peer_group {
+      id
+      name
+    }
+    import_policies {
+      id
+      name
+    }
+    export_policies {
+      id
+      name
+    }
+  }
+}

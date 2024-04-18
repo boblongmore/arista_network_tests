@@ -1,0 +1,51 @@
+---
+
+- name: Gather routing info
+  arista.eos.eos_command:
+    commands:
+      - command: show ip bgp summary
+        output: json
+  register: running_routing
+
+- name: set running_bgp fact
+  ansible.builtin.set_fact:
+    running_bgp: "{{ running_routing.stdout[0].vrfs.default }}"
+
+- name: print running_bgp fact
+  ansible.builtin.debug:
+    msg: "{{ running_bgp.peers }}"
+
+- name: Get BGP Session Data from Netbox
+  ansible.builtin.uri:
+    url: "{{ netbox_api }}/graphql/"
+    method: POST
+    headers:
+      Authorization: "Token {{ netbox_token }}"
+      Accept: "application/json"
+      Content-Type: application/json
+    body_format: json
+    validate_certs: false
+    follow_redirects: all
+    body:
+      query: "{{ lookup('ansible.builtin.template', '../templates/bgp.j2') }}"
+  register: bgp_data
+  delegate_to: localhost
+
+- name: Print BGP Intent
+  ansible.builtin.set_fact:
+    bgp_intent: "{{ bgp_data.json.data.bgp_session_list }}"
+
+- name: Print BGP Intent
+  ansible.builtin.debug:
+    msg:
+      - "{{ running_bgp.peers[item.remote_address.address | ansible.builtin.ipaddr('address')]['asn'] | int | type_debug }}"
+      - "{{ item.remote_as.asn | type_debug}}"
+  loop: "{{ bgp_intent }}"
+
+- name: Assert BGP health
+  ansible.builtin.assert:
+    that:
+      - running_bgp.peers[item.remote_address.address | ansible.builtin.ipaddr('address')]['peerState'] == 'Established'
+      - running_bgp.peers[item.remote_address.address | ansible.builtin.ipaddr('address')]['asn'] | int == item.remote_as.asn
+
+  loop: "{{ bgp_intent }}"

@@ -1,0 +1,11 @@
+---
+- name: Test interfaces for Arista switches
+  gather_facts: false
+  hosts: "{{ dut | default('eda-sw100') }}"
+  vars_files:
+    - ./vars/kafka_info.yml
+    - ./vars/netbox_info.yml
+  tasks:
+    - name: Test BGP
+      ansible.builtin.include_role:
+        name: test_routing
