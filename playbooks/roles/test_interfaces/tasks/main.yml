@@ -2,12 +2,12 @@
 
 - name: Retrieve int facts via graphql query
   ansible.builtin.uri:
-    url: "{{ netbox_api }}/graphql/"
+    url: "{{ nb_url }}/graphql/"
     validate_certs: false
     method: POST
     follow_redirects: all
     headers:
-      Authorization: " Token {{ netbox_token }}"
+      Authorization: " Token {{ nb_token }}"
       Accept: "application/json"
       Content-Type: application/json
     body_format: json
@@ -50,9 +50,9 @@
     - name: Gather failure
       ansible.builtin.debug:
         msg:
-        - "{{ item.assertion }}"
-        - "{{ item.item.name }}"
-        - "{{ item.item.device.name }}"
+          - "{{ item.assertion }}"
+          - "{{ item.item.name }}"
+          - "{{ item.item.device.name }}"
       loop: "{{ test_results.results }}"
       when: item.item.name != "Management1" and item.msg == "tests failed"
 
