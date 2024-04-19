@@ -22,16 +22,19 @@
         device_name: "{{ inventory_hostname }}"
         test_status: "{{ test_results.msg }}"
 
-    - name: Print facts
-      ansible.builtin.debug:
-        msg:
-          - "{{ test_name }}"
-          - "{{ device_name }}"
-          - "{{ test_status }}"
-
-
     # - name: Publish kafka message with test test_results
   rescue:
+
+    - name: Set facts used in kafka data payload
+      ansible.builtin.set_fact:
+        test_name: "Arista_test_http"
+        device_name: "{{ inventory_hostname }}"
+        test_status: "{{ test_results.msg }}"
+
     - name: Handle service failure gracefully
       ansible.builtin.debug:
-        msg: "Platform Pete Industries web service is unavailable"
+        msg:
+        # "Platform Pete Industries web service is unavailable"
+          - "{{ test_name }}"
+          - "{{ device_name }}"
+          - "{{ test_results }}"
