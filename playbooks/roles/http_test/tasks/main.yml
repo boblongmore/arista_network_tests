@@ -45,7 +45,6 @@
     - name: Publish kafka message with test test_results
       ansible.builtin.debug:
         msg:
-          #- "{{ test_status }}"
           - "{{ lookup('ansible.builtin.template', '../../../templates/success_data.j2') }}"
  rescue:
    - name: Set facts used in kafka data payload
