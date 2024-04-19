@@ -66,7 +66,7 @@
 
     - name: Print test results
       ansible.builtin.debug:
-        msg: "{{ test_results }}"
+        msg: "{{ test_results['msg'] }}"
 
     - name: Publish kafka message with test test_results
       bob_private_collection.kafka_python.producer_kafkapy:
