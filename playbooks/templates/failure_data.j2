@@ -1,0 +1,15 @@
+{
+    "test_name": "{{ test_name }}"
+    "device_name": "{{ device_name }}",
+    "test_status": "{{ test_status }}",
+    {% if item.item.name is defined %}
+    "interface_name": "{{ interface_name }}",
+    {% endif %}
+    {% if item.item.remote_address is defined %}
+    "local_address": "{{ local_address }}"
+    "local_asn": "{{ local_asn }}"
+    "remote_address": "{{ remote_address }}"
+    "remote_asn": "{{ remote_asn }}"
+    {% endif %}
+    "failure": "{{ failed_test }}"
+}
