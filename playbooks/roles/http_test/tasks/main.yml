@@ -60,7 +60,7 @@
       ansible.builtin.set_fact:
         test_name: "Arista_test_http"
         device_name: "{{ inventory_hostname }}"
-        test_status: "{{ web_contents.msg }}"
+        test_status: "{{ test_results['msg'] }}"
         failed_test: "{{ test_results['assertion'] }}"
       when: "'unreachable' in web_contents['msg']"
 
