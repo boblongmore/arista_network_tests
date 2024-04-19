@@ -4,11 +4,14 @@
   ansible.builtin.uri:
     url: "http://{{ http_test_web_server }}"
     return_content: true
+  ignore_unreachable: true
   delegate_to: user
   register: web_contents
 
+
 - name: Assert that the web site is reachable
   block:
+
     - name: Assert that Platform Pete is in returned content
       ansible.builtin.assert:
         that: "'Platform Pete' in web_contents['content']"
@@ -38,3 +41,4 @@
           - "{{ test_name }}"
           - "{{ device_name }}"
           - "{{ test_results }}"
+          - "{{ web_contents }}"
