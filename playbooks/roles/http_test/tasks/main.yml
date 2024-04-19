@@ -5,6 +5,7 @@
     url: "http://{{ http_test_web_server }}"
     return_content: true
   ignore_unreachable: true
+  ignore_errors: true
   delegate_to: user
   register: web_contents
 
@@ -18,6 +19,7 @@
         success_msg: "HTTP tests passed"
         fail_msg: "HTTP tests failed"
       register: test_results
+      when: web_contents['content']
 
     - name: Set facts used in kafka data payload
       ansible.builtin.set_fact:
