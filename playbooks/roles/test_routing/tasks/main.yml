@@ -36,9 +36,9 @@
     - name: Assert BGP health
       ansible.builtin.assert:
         that:
-          - running_bgp.peers[item.remote_address.address | ansible.builtin.ipaddr('address')]['peerState'] == 'Established'
-          - running_bgp.peers[item.remote_address.address | ansible.builtin.ipaddr('address')]['asn'] | int == item.remote_as.asn
-          - running_bgp.peers[item.remote_address.address | ansible.builtin.ipaddr('address')]['prefixAccepted'] > 0
+          - running_bgp.peers[item.remote_address.address | ansible.utils.ipaddr('address')]['peerState'] == 'Established'
+          - running_bgp.peers[item.remote_address.address | ansible.utils.ipaddr('address')]['asn'] | int == item.remote_as.asn
+          - running_bgp.peers[item.remote_address.address | ansible.utils.ipaddr('address')]['prefixAccepted'] > 0
         success_msg: "Routing tests passed"
         fail_msg: "Routing tests failed"
       loop: "{{ bgp_intent }}"
