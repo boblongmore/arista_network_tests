@@ -65,7 +65,7 @@
         interface_name: "{{ item.item.name }}"
         failure: "{{ item.assertion }}"
       loop: "{{ test_results.results }}"
-      when: item.item.name != "Management1" and item.msg == "tests failed"
+      when: item.item.name != "Management1" and item.msg == "Interface tests failed"
 
     - name: Publish kafka message with test test_results
       bob_private_collection.kafka_python.producer_kafkapy:
