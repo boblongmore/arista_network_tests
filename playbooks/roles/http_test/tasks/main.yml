@@ -20,19 +20,6 @@
         fail_msg: "HTTP tests failed"
       register: test_results
 
-    # - name: Assert Network Unreachable
-    #   ansible.builtin.assert:
-    #     that:
-    #       - "'Network is unreachable' not in web_contents['msg']"
-    #     success_msg: "HTTP tests passed"
-    #     fail_msg: "HTTP tests failed"
-    #   register: test_results
-    #   when: "'unreachable' in web_contents['msg']"
-
-    # - name: Print web_contents
-    #   ansible.builtin.debug:
-    #     msg: "{{ web_contents.msg }}"
-#
     - name: Set facts used in kafka data payload
       ansible.builtin.set_fact:
         test_name: "Arista_test_http"
@@ -64,12 +51,6 @@
         failed_test: "{{ test_results['assertion'] }}"
       when: "'unreachable' in web_contents['msg']"
 
-    - name: Print test results
-      ansible.builtin.debug:
-        msg:
-          - "{{ test_status }}"
-          - "{{ failed_test }}"
-
     - name: Publish kafka message with test test_results
       bob_private_collection.kafka_python.producer_kafkapy:
         host: "{{ messages_kafka_hostname }}"
@@ -78,7 +59,3 @@
         topic: "{{ messages_kafka_topic }}"
         data:
           - "{{ lookup('ansible.builtin.template', '../../../templates/failure_data.j2') }}"
-          # - "{{ test_name }}"
-          # - "{{ device_name }}"
-          # - "{{ test_status }}"
-          # - "{{ failed_test }}"
