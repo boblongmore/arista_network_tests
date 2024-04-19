@@ -14,10 +14,6 @@
       delegate_to: user
       register: web_contents
 
-    - name: Print web_contents
-      ansible.builtin.debug:
-        msg: "{{ web_contents.msg }}"
-
     - name: Assert that Platform Pete is in returned content
       ansible.builtin.assert:
         that: "'Platform Pete' in web_contents['content']"
@@ -26,6 +22,19 @@
       register: test_results
       when: web_contents['content']
 
+    - name: Assert Network Unreachable
+      ansible.builtin.assert:
+        that: "'Network is unreachable' in web_contents['msg']"
+        success_msg: "HTTP tests passed"
+        fail_msg: "HTTP tests failed"
+      register: test_results
+      when: unreachable in web_contents.msg
+
+
+
+    - name: Print web_contents
+      ansible.builtin.debug:
+        msg: "{{ web_contents.msg }}"
     # - name: Set facts used in kafka data payload
     #   ansible.builtin.set_fact:
     #     test_name: "Arista_test_http"
@@ -40,12 +49,19 @@
         test_name: "Arista_test_http"
         device_name: "{{ inventory_hostname }}"
         test_status: "{{ test_results.msg }}"
+      when: web_contents['content']
+
+    - name: Set fact for network unreachable
+      ansible.builtin.set_fact:
+        test_name: "Arista_test_http"
+        device_name: "{{ inventory_hostname }}"
+        test_status: "{{ web_contents.msg }}"
+      when: unreachable in web_contents.msg
 
     - name: Handle service failure gracefully
       ansible.builtin.debug:
         msg:
-        # "Platform Pete Industries web service is unavailable"
           - "{{ test_name }}"
           - "{{ device_name }}"
-          - "{{ test_results }}"
+          - "{{ test_status }}"
           - "{{ web_contents }}"
