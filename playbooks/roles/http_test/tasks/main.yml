@@ -53,7 +53,7 @@
         test_name: "Arista_test_http"
         device_name: "{{ inventory_hostname }}"
         test_status: "{{ test_results['msg'] }}"
-        failed_test: "{{ test_results.[0]['assertion'] }}"
+        failed_test: "{{ test_results['assertion'] }}"
       when: web_contents['content']
 
     - name: Set fact for network unreachable
@@ -61,7 +61,7 @@
         test_name: "Arista_test_http"
         device_name: "{{ inventory_hostname }}"
         test_status: "{{ web_contents.msg }}"
-        failed_test: "{{ test_results.[0]['assertion'] }}"
+        failed_test: "{{ test_results['assertion'] }}"
       when: "'unreachable' in web_contents['msg']"
 
     - name: Publish kafka message with test test_results
