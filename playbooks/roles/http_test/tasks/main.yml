@@ -40,7 +40,7 @@
       ansible.builtin.set_fact:
         test_name: "Arista_test_http"
         device_name: "{{ inventory_hostname }}"
-        test_status: "{{ test_results }}"
+        test_status: "{{ test_results[0]['msg'] }}"
 
     - name: Publish kafka message with test test_results
       ansible.builtin.debug:
@@ -53,8 +53,8 @@
       ansible.builtin.set_fact:
         test_name: "Arista_test_http"
         device_name: "{{ inventory_hostname }}"
-        test_status: "{{ test_results.msg }}"
-        failed_test: "{{ test_results.assertion }}"
+        test_status: "{{ test_results[0]['msg'] }}"
+        failed_test: "{{ test_results.[0]['assertion'] }}"
       when: web_contents['content']
 
     - name: Set fact for network unreachable
@@ -62,7 +62,7 @@
         test_name: "Arista_test_http"
         device_name: "{{ inventory_hostname }}"
         test_status: "{{ web_contents.msg }}"
-        failed_test: "{{ test_results.assertion }}"
+        failed_test: "{{ test_results.[0]['assertion'] }}"
       when: "'unreachable' in web_contents['msg']"
 
     - name: Handle service failure gracefully
