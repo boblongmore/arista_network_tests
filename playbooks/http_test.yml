@@ -10,4 +10,3 @@
     - name: Call role to test http
       ansible.builtin.include_role:
         name: http_test
-      delegate_to: user

@@ -4,6 +4,7 @@
   ansible.builtin.uri:
     url: "http://{{ http_test_web_server }}"
     return_content: true
+  delegate_to: user
   register: web_contents
 
 - name: Assert that the web site is reachable
