@@ -54,7 +54,7 @@
       ansible.builtin.set_fact:
         device_name: "{{ test_results.results[0].item.device.name }}"
         test_status: "{{ test_results.results[0].msg }}"
-        test_name: "{{ Arista_test_routing }}"
+        test_name: "Arista_test_routing"
 
     - name: Publish kafka message with test test_results
       bob_private_collection.kafka_python.producer_kafkapy:
