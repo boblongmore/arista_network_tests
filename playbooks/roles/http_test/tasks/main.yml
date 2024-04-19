@@ -19,22 +19,21 @@
         that: "'Platform Pete' in web_contents['content']"
         success_msg: "HTTP tests passed"
         fail_msg: "HTTP tests failed"
-      register: test_results
+      register: content_results
       when: web_contents['content']
 
     - name: Assert Network Unreachable
       ansible.builtin.assert:
-        that: "'Network is unreachable' in web_contents['msg']"
+        that: "'Network is unreachable' not in web_contents['msg']"
         success_msg: "HTTP tests passed"
         fail_msg: "HTTP tests failed"
       register: test_results
       when: "'unreachable' in web_contents['msg']"
 
-
-
     - name: Print web_contents
       ansible.builtin.debug:
         msg: "{{ web_contents.msg }}"
+
     # - name: Set facts used in kafka data payload
     #   ansible.builtin.set_fact:
     #     test_name: "Arista_test_http"
