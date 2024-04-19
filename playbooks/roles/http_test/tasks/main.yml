@@ -11,6 +11,25 @@
     - name: Assert that Platform Pete is in returned content
       ansible.builtin.assert:
         that: "'Platform Pete' in web_contents['content']"
+        success_msg: "HTTP tests passed"
+        fail_msg: "HTTP tests failed"
+      register: test_results
+
+    - name: Set facts used in kafka data payload
+      ansible.builtin.set_fact:
+        test_name: "Arista_test_http"
+        device_name: "{{ inventory_hostname }}"
+        test_status: "{{ test_results }}"
+
+    - name: Print facts
+      ansible.builtin.debug:
+        msg:
+          - "{{ test_name }}"
+          - "{{ device_name }}"
+          - "{{ test_status }}"
+
+
+    # - name: Publish kafka message with test test_results
   rescue:
     - name: Handle service failure gracefully
       ansible.builtin.debug:

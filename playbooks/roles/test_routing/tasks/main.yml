@@ -44,12 +44,6 @@
       loop: "{{ bgp_intent }}"
       register: test_results
 
-    # - name: Print required info for success
-    #   ansible.builtin.debug:
-    #     msg:
-    #       - "{{ test_results.results[0].item.device.name }}"
-    #       - "{{ test_results.results[0].msg }}"
-
     - name: Set fact for success messages
       ansible.builtin.set_fact:
         device_name: "{{ test_results.results[0].item.device.name }}"
