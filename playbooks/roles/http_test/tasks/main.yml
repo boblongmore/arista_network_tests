@@ -1,21 +1,22 @@
 ---
 
-- name: Check http status from user side
-  ansible.builtin.uri:
-    url: "http://{{ http_test_web_server }}"
-    return_content: true
-  ignore_unreachable: true
-  ignore_errors: true
-  delegate_to: user
-  register: web_contents
 
-- name: Print web_contents
-  ansible.builtin.debug:
-    msg: "{{ web_contents }}"
 
 
 - name: Assert that the web site is reachable
   block:
+    - name: Check http status from user side
+      ansible.builtin.uri:
+        url: "http://{{ http_test_web_server }}"
+        return_content: true
+      ignore_unreachable: true
+      ignore_errors: true
+      delegate_to: user
+      register: web_contents
+
+    - name: Print web_contents
+      ansible.builtin.debug:
+        msg: "{{ web_contents.msg }}"
 
     - name: Assert that Platform Pete is in returned content
       ansible.builtin.assert:
@@ -25,11 +26,11 @@
       register: test_results
       when: web_contents['content']
 
-    - name: Set facts used in kafka data payload
-      ansible.builtin.set_fact:
-        test_name: "Arista_test_http"
-        device_name: "{{ inventory_hostname }}"
-        test_status: "{{ test_results.msg }}"
+    # - name: Set facts used in kafka data payload
+    #   ansible.builtin.set_fact:
+    #     test_name: "Arista_test_http"
+    #     device_name: "{{ inventory_hostname }}"
+    #     test_status: "{{ test_results.msg }}"
 
     # - name: Publish kafka message with test test_results
   rescue:
