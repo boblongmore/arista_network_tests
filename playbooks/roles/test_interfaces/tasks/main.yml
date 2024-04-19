@@ -45,8 +45,8 @@
     - name: Set facts used in kafka data payload
       ansible.builtin.set_fact:
         test_name: "Arista_test_interfaces"
-        device_name: "{{ test_results.results[0].item.device.name }}",
-        test_status: "{{ test_results.results[0].msg }}",
+        device_name: "{{ test_results.results[0].item.device.name }}"
+        test_status: "{{ test_results.results[0].msg }}"
 
     - name: Publish kafka message with test test_results
       bob_private_collection.kafka_python.producer_kafkapy:
