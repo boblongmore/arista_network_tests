@@ -19,7 +19,7 @@
       ansible.builtin.set_fact:
         test_name: "Arista_test_http"
         device_name: "{{ inventory_hostname }}"
-        test_status: "{{ test_results }}"
+        test_status: "{{ test_results.msg }}"
 
     - name: Print facts
       ansible.builtin.debug:
