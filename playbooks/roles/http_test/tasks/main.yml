@@ -9,6 +9,10 @@
   delegate_to: user
   register: web_contents
 
+- name: Print web_contents
+  ansible.builtin.debug:
+    msg: "{{ web_contents }}"
+
 
 - name: Assert that the web site is reachable
   block:
