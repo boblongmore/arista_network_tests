@@ -7,13 +7,9 @@
         output: json
   register: running_routing
 
-- name: set running_bgp fact
+- name: Set running_bgp fact
   ansible.builtin.set_fact:
     running_bgp: "{{ running_routing.stdout[0].vrfs.default }}"
-
-- name: print running_bgp fact
-  ansible.builtin.debug:
-    msg: "{{ running_bgp.peers }}"
 
 - name: Get BGP Session Data from Netbox
   ansible.builtin.uri:
@@ -31,21 +27,39 @@
   register: bgp_data
   delegate_to: localhost
 
-- name: Print BGP Intent
+- name: Set fact for bgp_intent data from Netbox
   ansible.builtin.set_fact:
     bgp_intent: "{{ bgp_data.json.data.bgp_session_list }}"
 
-- name: Print BGP Intent
-  ansible.builtin.debug:
-    msg:
-      - "{{ running_bgp.peers[item.remote_address.address | ansible.builtin.ipaddr('address')]['asn'] | int | type_debug }}"
-      - "{{ item.remote_as.asn | type_debug}}"
-  loop: "{{ bgp_intent }}"
+- name: Block for testing arista routing health
+  block:
+    - name: Assert BGP health
+      ansible.builtin.assert:
+        that:
+          - running_bgp.peers[item.remote_address.address | ansible.builtin.ipaddr('address')]['peerState'] == 'Established'
+          - running_bgp.peers[item.remote_address.address | ansible.builtin.ipaddr('address')]['asn'] | int == item.remote_as.asn
+          - running_bgp.peers[item.remote_address.address | ansible.builtin.ipaddr('address')]['prefixAccepted'] > 0
+        success_msg: "Routing tests passed"
+        fail_msg: "Routing tests failed"
+      loop: "{{ bgp_intent }}"
+      register: test_results
 
-- name: Assert BGP health
-  ansible.builtin.assert:
-    that:
-      - running_bgp.peers[item.remote_address.address | ansible.builtin.ipaddr('address')]['peerState'] == 'Established'
-      - running_bgp.peers[item.remote_address.address | ansible.builtin.ipaddr('address')]['asn'] | int == item.remote_as.asn
+    # - name: Print required info for success
+    #   ansible.builtin.debug:
+    #     msg:
+    #       - "{{ test_results.results[0].item.device.name }}"
+    #       - "{{ test_results.results[0].msg }}"
 
-  loop: "{{ bgp_intent }}"
+    - name: Set fact for success messages
+      ansible.builtin.set_fact:
+        device_name: "{{ test_results.results[0].item.device.name }}"
+        test_status: "{{ test_results.results[0].msg }}"
+        test_name: "{{ Arista_test_routing }}"
+
+    - name: Publish kafka message with test test_results
+      bob_private_collection.kafka_python.producer_kafkapy:
+        host: "{{ messages_kafka_hostname }}"
+        port: "{{ messages_kafka_port }}"
+        verify_mode: false
+        topic: "{{ messages_kafka_topic }}"
+        data: "{{ lookup('ansible.builtin.template', '../../../templates/success_data.j2') }}"
