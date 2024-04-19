@@ -1,8 +1,5 @@
 ---
 
-
-
-
 - name: Assert that the web site is reachable
   block:
     - name: Check http status from user side
