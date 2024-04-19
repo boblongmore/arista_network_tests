@@ -40,7 +40,7 @@
       ansible.builtin.set_fact:
         test_name: "Arista_test_http"
         device_name: "{{ inventory_hostname }}"
-        test_status: "{{ test_results['msg'][0]['msg'] }}"
+        test_status: "{{ test_results['msg']}}"
 
     - name: Publish kafka message with test test_results
       ansible.builtin.debug:
