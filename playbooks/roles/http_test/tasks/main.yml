@@ -64,6 +64,10 @@
         failed_test: "{{ test_results['assertion'] }}"
       when: "'unreachable' in web_contents['msg']"
 
+    - name: Print test results
+      ansible.builtin.debug:
+        msg: "{{ test_results }}"
+
     - name: Publish kafka message with test test_results
       bob_private_collection.kafka_python.producer_kafkapy:
         host: "{{ messages_kafka_hostname }}"
