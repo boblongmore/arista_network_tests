@@ -63,7 +63,7 @@
         device_name: "{{ item.item.device.name }}"
         test_status: "{{ item.msg }}"
         interface_name: "{{ item.item.name }}"
-        failure: "{{ item.assertion }}"
+        failed_test: "{{ item.assertion }}"
       loop: "{{ test_results.results }}"
       when: item.item.name != "Management1" and item.msg == "Interface tests failed"
 
