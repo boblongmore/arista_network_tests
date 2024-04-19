@@ -40,36 +40,33 @@
       ansible.builtin.set_fact:
         test_name: "Arista_test_http"
         device_name: "{{ inventory_hostname }}"
-        test_status: "{{ test_results['msg'][0]}}"
+        test_status: "{{ test_results['msg'] }}"
 
     - name: Publish kafka message with test test_results
       ansible.builtin.debug:
         msg:
-          - "{{ test_status }}"
-          # - "{{ lookup('ansible.builtin.template', '../../../templates/success_data.j2') }}"
- # rescue:
-
- #   - name: Set facts used in kafka data payload
- #     ansible.builtin.set_fact:
- #       test_name: "Arista_test_http"
- #       device_name: "{{ inventory_hostname }}"
- #       test_status: "{{ test_results[0]['msg'] }}"
- #       failed_test: "{{ test_results.[0]['assertion'] }}"
- #     when: web_contents['content']
-
- #   - name: Set fact for network unreachable
- #     ansible.builtin.set_fact:
- #       test_name: "Arista_test_http"
- #       device_name: "{{ inventory_hostname }}"
- #       test_status: "{{ web_contents.msg }}"
- #       failed_test: "{{ test_results.[0]['assertion'] }}"
- #     when: "'unreachable' in web_contents['msg']"
-
- #   - name: Handle service failure gracefully
- #     ansible.builtin.debug:
- #       msg:
- #         - "{{ lookup('ansible.builtin.template', '../../../templates/failure_data.j2') }}"
- #         # - "{{ test_name }}"
- #         # - "{{ device_name }}"
- #         # - "{{ test_status }}"
- #         # - "{{ failed_test }}"
+          #- "{{ test_status }}"
+          - "{{ lookup('ansible.builtin.template', '../../../templates/success_data.j2') }}"
+ rescue:
+   - name: Set facts used in kafka data payload
+     ansible.builtin.set_fact:
+       test_name: "Arista_test_http"
+       device_name: "{{ inventory_hostname }}"
+       test_status: "{{ test_results['msg'] }}"
+       failed_test: "{{ test_results.[0]['assertion'] }}"
+     when: web_contents['content']
+   - name: Set fact for network unreachable
+     ansible.builtin.set_fact:
+       test_name: "Arista_test_http"
+       device_name: "{{ inventory_hostname }}"
+       test_status: "{{ web_contents.msg }}"
+       failed_test: "{{ test_results.[0]['assertion'] }}"
+     when: "'unreachable' in web_contents['msg']"
+   - name: Handle service failure gracefully
+     ansible.builtin.debug:
+       msg:
+         - "{{ lookup('ansible.builtin.template', '../../../templates/failure_data.j2') }}"
+         # - "{{ test_name }}"
+         # - "{{ device_name }}"
+         # - "{{ test_status }}"
+         # - "{{ failed_test }}"
