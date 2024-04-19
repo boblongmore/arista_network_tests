@@ -28,7 +28,7 @@
         success_msg: "HTTP tests passed"
         fail_msg: "HTTP tests failed"
       register: test_results
-      when: web_contents['msg'] contains "unreachable"
+      when: "unreachable" in web_contents['msg']
 
 
 
@@ -56,7 +56,7 @@
         test_name: "Arista_test_http"
         device_name: "{{ inventory_hostname }}"
         test_status: "{{ web_contents.msg }}"
-      when: web_contents['msg'] contains "unreachable"
+      when: "unreachable" in web_contents['msg']
 
     - name: Handle service failure gracefully
       ansible.builtin.debug:
