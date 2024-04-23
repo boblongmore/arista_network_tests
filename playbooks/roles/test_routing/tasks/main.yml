@@ -39,8 +39,8 @@
           - running_bgp.peers[item.remote_address.address | ansible.utils.ipaddr('address')]['peerState'] == 'Established'
           - running_bgp.peers[item.remote_address.address | ansible.utils.ipaddr('address')]['asn'] | int == item.remote_as.asn
           - running_bgp.peers[item.remote_address.address | ansible.utils.ipaddr('address')]['prefixAccepted'] > 0
-        success_msg: "Routing tests passed"
-        fail_msg: "Routing tests failed"
+        success_msg: "Routing_tests_passed"
+        fail_msg: "Routing_tests_failed"
       loop: "{{ bgp_intent }}"
       register: test_results
 
@@ -70,7 +70,7 @@
         remote_asn: "{{ item.item.remote_as.asn }}"
         failed_test: "{{ item.assertion }}"
       loop: "{{ test_results.results }}"
-      when: item.msg == "Routing tests failed"
+      when: item.msg == "Routing_tests_failed"
 
     - name: Publish kafka message with test test_results
       bob_private_collection.kafka_python.producer_kafkapy:
