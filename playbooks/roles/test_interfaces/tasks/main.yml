@@ -36,8 +36,8 @@
           - (running_int[item.name]['operstatus'] == 'connected') and item.enabled
           - running_int[item.name]['ipv4']['address'] in item.ip_addresses[0]['address']
           - running_int[item.name]['ipv4']['masklen'] == item.ip_addresses[0]['address'] | ansible.utils.ipaddr('prefix')
-        success_msg: "Interface tests passed"
-        fail_msg: "Interface tests failed"
+        success_msg: "Interface_tests_passed"
+        fail_msg: "Interface_tests_failed"
       loop: "{{ graph_lookup.json.data.interface_list }}"
       when: item.name != "Management1"
       register: test_results
@@ -65,7 +65,7 @@
         interface_name: "{{ item.item.name }}"
         failed_test: "{{ item.assertion }}"
       loop: "{{ test_results.results }}"
-      when: item.item.name != "Management1" and item.msg == "Interface tests failed"
+      when: item.item.name != "Management1" and item.msg == "Interface_tests_failed"
 
     - name: Publish kafka message with test test_results
       bob_private_collection.kafka_python.producer_kafkapy:

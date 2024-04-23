@@ -16,8 +16,8 @@
         that:
           - "'Platform Pete' in web_contents['content']"
           - "'Network is unreachable' not in web_contents['msg']"
-        success_msg: "HTTP tests passed"
-        fail_msg: "HTTP tests failed"
+        success_msg: "HTTP_tests_passed"
+        fail_msg: "HTTP_tests_failed"
       register: test_results
 
     - name: Set facts used in kafka data payload
