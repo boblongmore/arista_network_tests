@@ -1,0 +1,12 @@
+---
+- name: Test http service through the network
+  gather_facts: false
+  hosts: "{{ dut | default('eda-sw100') }}"
+  vars_files:
+    - ./vars/kafka_info.yml
+    - ./vars/netbox_info.yml
+
+  tasks:
+    - name: Call role to test http
+      ansible.builtin.include_role:
+        name: arista_test_sw_version
