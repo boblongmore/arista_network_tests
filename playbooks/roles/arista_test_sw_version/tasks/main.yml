@@ -1,13 +1,12 @@
 ---
 
-- name: Retrieve current SW version from Arista Device
-  arista.eos.eos_facts:
-    gather_subset: all
-  register: eos
-
-
 - name: Block to test sw version is correct
   block:
+    - name: Retrieve current SW version from Arista Device
+      arista.eos.eos_facts:
+        gather_subset: all
+      register: eos
+
     - name: Assert running equals intended
       ansible.builtin.assert:
         that:
@@ -18,7 +17,7 @@
 
     - name: Set facts used in kafka data payload
       ansible.builtin.set_fact:
-        test_name: "arista_test_sw_version"
+        test_name: "Arista_test_sw_ver"
         device_name: "{{ inventory_hostname }}"
         test_status: "{{ test_results['msg'] }}"
 
@@ -30,10 +29,11 @@
         verify_mode: false
         topic: "{{ messages_kafka_topic }}"
         data: "{{ lookup('ansible.builtin.template', '../../../templates/success_data.j2') }}"
+
   rescue:
     - name: Set facts used in kafka data payload
       ansible.builtin.set_fact:
-        test_name: "arista_test_sw_version"
+        test_name: "Arista_test_sw_ver"
         device_name: "{{ inventory_hostname }}"
         test_status: "{{ test_results['msg'] }}"
         failed_test: "{{ test_results['assertion'] }}"
