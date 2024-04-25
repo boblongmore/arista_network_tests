@@ -1,0 +1,10 @@
+- name: Gather routing info
+  arista.eos.eos_command:
+    commands:
+      - command: show ip bgp summary
+        output: json
+  register: running_routing
+
+- name: Set running_bgp fact
+  ansible.builtin.set_fact:
+    running_bgp: "{{ running_routing.stdout[0].vrfs.default }}"
