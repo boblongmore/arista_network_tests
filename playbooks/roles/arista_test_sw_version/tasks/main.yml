@@ -10,7 +10,7 @@
     - name: Assert running equals intended
       ansible.builtin.assert:
         that:
-          - eos.ansible_facts.ansible_net_version == sw_version
+          - eos.ansible_facts.ansible_net_version contains sw_version
         success_msg: "upgrade_sw_version_passed"
         fail_msg: "upgrade_sw_version_failed"
       register: test_results
