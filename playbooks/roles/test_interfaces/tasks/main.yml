@@ -71,4 +71,4 @@
         name: messages_kafka
       vars:
         messages_kafka_data:
-          - "{{ lookup('ansible.builtin.template', '../../../templates/failure_data.j2') }}"
+          "{{ lookup('ansible.builtin.template', '../../../templates/failure_data.j2') }}"
