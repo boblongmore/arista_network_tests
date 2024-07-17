@@ -55,7 +55,7 @@
         name: messages_kafka
       vars:
         messages_kafka_data:
-          - "{{ lookup('ansible.builtin.template', '../../../templates/success_data.j2') }}"
+          "{{ lookup('ansible.builtin.template', '../../../templates/success_data.j2') }}"
 
   rescue:
     - name: Set fact for failure data
