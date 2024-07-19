@@ -1,6 +1,6 @@
 # arista-network-tests
 
-## anatomay of a test
+## anatomy of a test
 popularized with TDD
 - Arrange
 - Act
