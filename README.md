@@ -1,22 +1,25 @@
 # arista-network-tests
 
+This repository was developed in conjunction with [Ansiblefest2024](https://github.com/boblongmore/ansiblefest2024), which was developed to showcase Ansible and EDA at Red Hat Summit 2024.
+
 ## anatomy of a test
-popularized with TDD
-- Arrange
-- Act
-- Assert
-- Cleanup
 
-## device checks
- - check for disk space to upload new image, should be 2x the amount of space the new file needs
- - check for memory leaks. Make sure memory is stable and not above 90 percent
- - check logs for errors
+![Testing](images/testing.png)
 
-## system checks
-- Check interfaces that should be up are up
-- Check BGP is up
-- Check for BGP peers
-- Check for connectivity of web traffic through the network
+## Two Types of Tests
+
+![Two Types of Testing](images/validation-and-testing.png)
+
+In this scenario, information about configuration and desired architecture are stored in Netbox.
+
+## Configuration Tests
+- test_interfaces - are the interfaces configured as Netbox prescribes
+- test_system_status - Is there enough free space to upgrade
+- test_sw_version - Is the device running the correct version of code
+
+## System Tests
+- test_routing - are the BGP neighbors modeled in netbox up and exchanging routes
+- test_http - is an http service available through the network topology
 
 # Authors
 
