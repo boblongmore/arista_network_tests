@@ -1,12 +1,12 @@
-query{
+{
   interface_list(device: "{{ inventory_hostname }}") {
-    name
+    _name
     enabled
     ip_addresses {
       address
     }
     device {
-      name
+      _name
     }
   }
 }
