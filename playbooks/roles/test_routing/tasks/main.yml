@@ -29,7 +29,7 @@
 
 - name: Set fact for bgp_intent data from Netbox
   ansible.builtin.set_fact:
-    bgp_intent: "{{ bgp_data.json.data.bgp_session_list }}"
+    bgp_intent: "{{ bgp_data.json.data.netbox_bgp_session_list }}"
 
 - name: Block for testing arista routing health
   block:
