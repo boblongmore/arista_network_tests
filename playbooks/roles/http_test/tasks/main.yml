@@ -8,7 +8,7 @@
         return_content: true
       ignore_unreachable: true
       ignore_errors: true
-      delegate_to: user
+      delegate_to: linux_user
       register: web_contents
 
     - name: Assert that Platform Pete is in returned content
