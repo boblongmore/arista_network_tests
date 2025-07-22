@@ -1,5 +1,5 @@
 {
-  interface_list(filters: {device: "{{ inventory_hostname}}"}) {
+  interface_list(filters: {device: {name: {exact: "{{ inventory_hostname}}"}}}) {
     device {
       name
     }
