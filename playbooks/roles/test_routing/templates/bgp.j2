@@ -1,5 +1,5 @@
 {
-netbox_bgp_session_list(filters: {device: name: "{{ inventory_hostname}}"}) {
+netbox_bgp_session_list(filters: {device: {name: {exact: "{{ inventory_hostname}}"}}}) {
     device {
       id
       name
